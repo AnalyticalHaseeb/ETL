@@ -1,6 +1,3 @@
-skip_rows_kimbel = 12
-skip_rows_samuel = 11
-sheet_name = "Performance Statistics"
 
 truncate_usm_dl_ri = "truncate table [staging].[USM_DL_RI]"
 truncate_usm_erab_accessibility = "truncate table [staging].[USM_ERAB_Accessibility]"
@@ -13,39 +10,6 @@ truncate_imsi_data = " truncate table staging.IMSI_Data_usage"
 truncate_table_unique_users = "truncate table  [staging].[unique_users]"
 truncate_table_BlinQ = "truncate table  [staging].[BlinQ]"
 truncate_table_Bec_Export = "truncate table  [staging].[Bec_Export]"
-
-
-#### Paths
-path_core_data = r"C:\SQLPub\CORE"
-path_kimbel = r"C:\SQLPub\USM\Kimball"
-path_samuel = r"C:\SQLPub\USM\Adamson.Samule"
-
-path_usm_dl_ri_kimbel = path_kimbel + "\DL_RI.xlsx"
-path_usm_dl_ri_samuel = path_samuel + "\DL_RI.xlsx"
-
-path_usm_erab_accessibility_kimbel = path_kimbel + "\Accessibility.xlsx"
-path_usm_erab_accessibility_samuel = path_samuel + "\Accessibility.xlsx"
-
-path_air_mac_packet_kimbel = path_kimbel + "\Air_MAC_Packet.xlsx"
-path_air_mac_packet_Samuel = path_samuel + "\Air_MAC_Packet.xlsx"
-
-path_rrc_connection_establishment_kimbel = path_kimbel + "\RRC_Connection_Establishment.xlsx"
-path_rrc_connection_establishment_Samuel = path_samuel + "\RRC_Connection_Establishment.xlsx"
-
-path_availability_kimbel = path_kimbel + "\Availability.xlsx"
-path_availability_Samuel = path_samuel + "\Availability.xlsx"
-
-path_s1_connection_establishment_kimbell = path_kimbel + "\S1_Connection_Establishment.xlsx"
-path_s1_connection_establishment_samuel = path_samuel + "\S1_Connection_Establishment.xlsx"
-
-path_scell_added_information_kimbell = path_kimbel + "\SCell_Added_Information.xlsx"
-path_scell_added_information_samuel = path_samuel + "\SCell_Added_Information.xlsx"
-
-path_imsi_Data = path_core_data + "\Customer_DISD_IMSI.csv"
-path_unique_users = path_core_data + "\\Unique_Users.csv"
-
-path_blinq = path_core_data + "\BLINQ.csv"
-path_Bec_Export = "C:\SQLPub\CPE\BEC_Report.csv"
 
 insert_usm_erab_accessibility = '''
             INSERT INTO [T5G_DEV].[staging].[USM_ERAB_Accessibility]

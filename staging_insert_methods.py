@@ -5,9 +5,9 @@ from dateutil.parser import parse
 from datetime import date
 import warnings
 from staging_queries import *
-from termcolor import colored
-from colorama import Fore
-from colorama import Style
+from File_paths import *
+import shutil
+import time
 
 def convert_check(val):
     try:
@@ -52,6 +52,10 @@ def staging_dl_ri(insert_query, Path, sheet, skip_rows, cursor, conn):
                        )
     conn.commit()
 
+    #moving file
+    output_path= path_etl_archive+str(time.strftime("%Y%m%d_%H%M%S"))+dl_ri_file_name
+    shutil.move(Path,output_path)
+
 
 def staging_usm_erab_accessibility(src, insert_query, Path, sheet, skip_rows, cursor, conn):
     with warnings.catch_warnings(record=True):
@@ -77,7 +81,9 @@ def staging_usm_erab_accessibility(src, insert_query, Path, sheet, skip_rows, cu
 
                        )
     conn.commit()
-
+    #moving file
+    output_path= path_etl_archive+str(time.strftime("%Y%m%d_%H%M%S"))+accessibility_file_name
+    shutil.move(Path,output_path)
 
 def staging_usm_air_mac_packet(insert_query, Path, sheet, skip_rows, cursor, conn):
     with warnings.catch_warnings(record=True):
@@ -110,7 +116,9 @@ def staging_usm_air_mac_packet(insert_query, Path, sheet, skip_rows, cursor, con
 
                        )
     conn.commit()
-
+    #moving file
+    output_path= path_etl_archive+str(time.strftime("%Y%m%d_%H%M%S"))+air_mac_packet_file_name
+    shutil.move(Path,output_path)
 
 def staging_usm_rrc_connection_establishment(src, insert_query, Path, sheet, skip_rows, cursor, conn):
     with warnings.catch_warnings(record=True):
@@ -148,7 +156,9 @@ def staging_usm_rrc_connection_establishment(src, insert_query, Path, sheet, ski
 
                        )
     conn.commit()
-
+    #moving file
+    output_path= path_etl_archive+str(time.strftime("%Y%m%d_%H%M%S"))+rrc_connection_establishment
+    shutil.move(Path,output_path)
 
 def staging_usm_availability(source, insert_query, Path, sheet, skip_rows, cursor, conn):
     with warnings.catch_warnings(record=True):
@@ -180,6 +190,10 @@ def staging_usm_availability(source, insert_query, Path, sheet, skip_rows, curso
                        )
     conn.commit()
 
+    conn.commit()
+    #moving file
+    output_path= path_etl_archive+str(time.strftime("%Y%m%d_%H%M%S"))+availability_file_name
+    shutil.move(Path,output_path)
 
 def staging_usm_s1_connection_establishment(insert_query, Path, sheet, skip_rows, cursor, conn):
     with warnings.catch_warnings(record=True):
@@ -203,7 +217,9 @@ def staging_usm_s1_connection_establishment(insert_query, Path, sheet, skip_rows
 
                        )
     conn.commit()
-
+    #moving file
+    output_path= path_etl_archive+str(time.strftime("%Y%m%d_%H%M%S"))+s1_connection_establishment_file_name
+    shutil.move(Path,output_path)
 
 def staging_usm_scell_added_information_kimbell(insert_query, Path, sheet, skip_rows, cursor, conn):
     with warnings.catch_warnings(record=True):
@@ -234,7 +250,9 @@ def staging_usm_scell_added_information_kimbell(insert_query, Path, sheet, skip_
 
                        )
     conn.commit()
-
+    #moving file
+    output_path= path_etl_archive+str(time.strftime("%Y%m%d_%H%M%S"))+"_Kimbel_"+scell_added_information_file_name
+    shutil.move(Path,output_path)
 def staging_usm_scell_added_information_samuel(insert_query, Path, sheet, skip_rows, cursor, conn):
     with warnings.catch_warnings(record=True):
         warnings.simplefilter("always")
@@ -264,7 +282,9 @@ def staging_usm_scell_added_information_samuel(insert_query, Path, sheet, skip_r
 
                        )
     conn.commit()
-
+    #moving file
+    output_path= path_etl_archive+str(time.strftime("%Y%m%d_%H%M%S"))+"_samuel_"+scell_added_information_file_name
+    shutil.move(Path,output_path)
 
 def staging_imsi_data(insert_query, Path, cursor, conn):
     data = pd.read_csv(Path)
@@ -278,6 +298,9 @@ def staging_imsi_data(insert_query, Path, cursor, conn):
 
                        )
     conn.commit()
+    #moving file
+    output_path= path_etl_archive+str(time.strftime("%Y%m%d_%H%M%S"))+imsi_file_name
+    shutil.move(Path,output_path)
 
 
 def staging_unique_users(insert_query, Path, cursor, conn):
@@ -291,7 +314,10 @@ def staging_unique_users(insert_query, Path, cursor, conn):
                        str(row[3]).replace(",", ""),
                        cur_timestamp
                        )
-
+    conn.commit()
+    #moving file
+    output_path= path_etl_archive+str(time.strftime("%Y%m%d_%H%M%S"))+unique_users_file_name
+    shutil.move(Path,output_path)
 
 def staging_BlinQ(insert_query, Path, cursor, conn):
     data = pd.read_csv(Path)
@@ -404,7 +430,9 @@ def staging_BlinQ(insert_query, Path, cursor, conn):
                        )
 
     conn.commit()
-
+    #moving file
+    output_path= path_etl_archive+str(time.strftime("%Y%m%d_%H%M%S"))+bling_file_name
+    shutil.move(Path,output_path)
 
 def staging_Bec_Export(insert_query, Path, cursor, conn):
     data = pd.read_csv(Path)
@@ -475,10 +503,13 @@ def staging_Bec_Export(insert_query, Path, cursor, conn):
     conn.commit()
     cursor.execute('exec [staging].[Bec_Export_cases_for_nulls]')
     conn.commit()
+    #moving file
+    output_path= path_etl_archive+str(time.strftime("%Y%m%d_%H%M%S"))+bec_file_name
+    shutil.move(Path,output_path)
 
 
 def staging_insert_main(cursor, conn):
-    #############################################################################
+#############################################################################
 
     print('staging_usm_availability_kimbel')
 
@@ -689,7 +720,7 @@ def staging_insert_main(cursor, conn):
         print('**********************   Error: File Not Found *****************\n')
 
 
-#############################################################################
+############################################################################
 
     print('staging_imsi_data')
     try:
@@ -715,25 +746,25 @@ def staging_insert_main(cursor, conn):
         print('**********************   Error: File Not Found *****************\n')
 
 
-    # print('staging_BlinQ')
-    # try:
-    #     staging_BlinQ(insert_BlinQ,
-    #                   path_blinq,
-    #                   cursor,
-    #                   conn
-    #                   )
-    # except OSError as ex:
-    #
-    #     print('**********************   Error: File Not Found *****************\n')
-    #
-    #
-    # print('staging_Bec_Export')
-    # try:
-    #     staging_Bec_Export(insert_Bec_Export,
-    #                        path_Bec_Export,
-    #                        cursor,
-    #                        conn
-    #                        )
-    # except OSError as ex:
-    #
-    #     print('**********************   Error: File Not Found *****************\n')
+    print('staging_BlinQ')
+    try:
+        staging_BlinQ(insert_BlinQ,
+                      path_blinq,
+                      cursor,
+                      conn
+                      )
+    except OSError as ex:
+
+        print('**********************   Error: File Not Found *****************\n')
+
+
+    print('staging_Bec_Export')
+    try:
+        staging_Bec_Export(insert_Bec_Export,
+                           path_Bec_Export,
+                           cursor,
+                           conn
+                           )
+    except OSError as ex:
+
+        print('**********************   Error: File Not Found *****************\n')
