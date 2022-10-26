@@ -573,6 +573,9 @@ def staging_Bec_Export(insert_query, Path, cursor, conn):
 
 def staging_insert_main(cursor, conn):
 #############################################################################
+
+
+    print("Check if the log file needs to be moved")
     move_log_file()
 
     print('staging_usm_availability_kimbel')
