@@ -6,7 +6,8 @@ from staging_insert_methods import *
 import os, sys
 from datetime import datetime
 from Historical_data_load import *
-
+import time
+from datetime import date
 
 def truncate_staging_tables(cursor, conn):
     """
@@ -68,6 +69,7 @@ def main():
                           'Database=T5G_DEV;'
                           'Trusted_Connection=yes;')
     cursor = conn.cursor()
+
 
 
 
