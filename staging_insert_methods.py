@@ -12,10 +12,11 @@ from dwh_queries import *
 import os
 def move_log_file():
     size=os.path.getsize(txt_file_path)
-    if(size>9999999):
+    if(size>1048576):
         output_path = path_etl_archive +"log_"+str(time.strftime("%Y%m%d_%H%M%S"))+".txt"
         shutil.move(txt_file_path, output_path)
-        write_to_log("start_time", " table_name", " status")
+        f = open(txt_file_path, "a")
+        f.write("start_time ,  table_name ,  status" )
 
 def write_to_log(start_time, table_name, status, cursor, conn):
     s=str(start_time)
@@ -194,10 +195,15 @@ def staging_usm_rrc_connection_establishment(src, insert_query, Path, sheet, ski
     shutil.move(Path,output_path)
 
 def staging_usm_availability(source, insert_query, Path, sheet, skip_rows, cursor, conn):
+
+    print("m 1")
+
     with warnings.catch_warnings(record=True):
         warnings.simplefilter("always")
         data = pd.read_excel(pd.ExcelFile(Path), sheet, skiprows=skip_rows)
     cur_timestamp = datetime.datetime.now()
+    print("m 2")
+
     for row in data.itertuples():
         if source == "Kimbell":
             seven = convert_check(row[7])
@@ -222,13 +228,18 @@ def staging_usm_availability(source, insert_query, Path, sheet, skip_rows, curso
 
                        )
     conn.commit()
-    # merge
+    print("m 3")
+
     cursor.execute(merge_dwh_usm_availability)
+    print("m 4")
 
     conn.commit()
     #moving file
+
     output_path= path_etl_archive+str(time.strftime("%Y%m%d_%H%M%S"))+availability_file_name
     shutil.move(Path,output_path)
+    print("m 5")
+
 
 def staging_usm_s1_connection_establishment(insert_query, Path, sheet, skip_rows, cursor, conn):
     with warnings.catch_warnings(record=True):
@@ -550,12 +561,6 @@ def staging_Bec_Export(insert_query, Path, cursor, conn):
                        str(row[47]),
                        str(row[48]),
                        str(row[49]),
-                       str(row[50]),
-                       str(row[51]),
-                       str(row[52]),
-                       str(row[53]),
-                       str(row[54]),
-                       str(row[55]),
                        cur_timestamp
                        )
 
@@ -595,8 +600,8 @@ def staging_insert_main(cursor, conn):
         write_to_log(start_timestamp, path_availability_kimbel, "Finished", cursor, conn)
     except OSError as ex:
 
-        write_to_log(start_timestamp, path_availability_kimbel, "*** File not found ***", cursor, conn)
-        print('**********************   Error: File Not Found *****************\n')
+        write_to_log(start_timestamp, path_availability_kimbel, "***Error / File not found  ***", cursor, conn)
+        print('*************************Error / File not found  ********************\n')
 
 
 
@@ -617,8 +622,8 @@ def staging_insert_main(cursor, conn):
         write_to_log(start_timestamp, path_availability_Samuel, "Finished", cursor, conn)
     except OSError as ex:
 
-        write_to_log(start_timestamp, path_availability_Samuel, "*** File not found ***", cursor, conn)
-        print('**********************   Error: File Not Found *****************\n')
+        write_to_log(start_timestamp, path_availability_Samuel, "***Error / File not found  ***", cursor, conn)
+        print('*************************Error / File not found  ********************\n')
 
 
 #############################################################################
@@ -638,8 +643,8 @@ def staging_insert_main(cursor, conn):
         write_to_log(start_timestamp, path_usm_dl_ri_kimbel, "Finished", cursor, conn)
     except OSError as ex:
 
-        write_to_log(start_timestamp,path_usm_dl_ri_kimbel, "*** File not found ***", cursor, conn)
-        print('**********************   Error: File Not Found *****************\n')
+        write_to_log(start_timestamp,path_usm_dl_ri_kimbel, "***Error / File not found  ***", cursor, conn)
+        print('*************************Error / File not found  ********************\n')
 
 
     print("staging_dl_ri_Samuel")
@@ -656,8 +661,8 @@ def staging_insert_main(cursor, conn):
         write_to_log(start_timestamp, path_usm_dl_ri_samuel, "Finished", cursor, conn)
 
     except OSError as ex:
-        write_to_log(start_timestamp, path_usm_dl_ri_samuel, "*** File not found ***", cursor, conn)
-        print('**********************   Error: File Not Found *****************\n')
+        write_to_log(start_timestamp, path_usm_dl_ri_samuel, "***Error / File not found  ***", cursor, conn)
+        print('*************************Error / File not found  ********************\n')
 
 
 ##############################################################################
@@ -678,8 +683,8 @@ def staging_insert_main(cursor, conn):
         write_to_log(start_timestamp,path_usm_erab_accessibility_kimbel, "Finished", cursor, conn)
 
     except OSError as ex:
-        write_to_log(start_timestamp, path_usm_erab_accessibility_kimbel, "*** File not found ***", cursor, conn)
-        print('**********************   Error: File Not Found *****************\n')
+        write_to_log(start_timestamp, path_usm_erab_accessibility_kimbel, "***Error / File not found  ***", cursor, conn)
+        print('*************************Error / File not found  ********************\n')
 
 
 
@@ -700,8 +705,8 @@ def staging_insert_main(cursor, conn):
         write_to_log(start_timestamp, path_usm_erab_accessibility_samuel, "Finished", cursor, conn)
 
     except OSError as ex:
-        write_to_log(start_timestamp, path_usm_erab_accessibility_samuel, "*** File not found ***", cursor, conn)
-        print('**********************   Error: File Not Found *****************\n')
+        write_to_log(start_timestamp, path_usm_erab_accessibility_samuel, "***Error / File not found  ***", cursor, conn)
+        print('*************************Error / File not found  ********************\n')
 
     ##############################################################################
 
@@ -722,8 +727,8 @@ def staging_insert_main(cursor, conn):
         write_to_log(start_timestamp, path_air_mac_packet_kimbel, "Finished", cursor, conn)
 
     except OSError as ex:
-        write_to_log(start_timestamp, path_air_mac_packet_kimbel, "*** File not found ***", cursor, conn)
-        print('**********************   Error: File Not Found *****************\n')
+        write_to_log(start_timestamp, path_air_mac_packet_kimbel, "***Error / File not found  ***", cursor, conn)
+        print('*************************Error / File not found  ********************\n')
 
 
     print('staging_usm_air_mac_packet_samuel')
@@ -742,8 +747,8 @@ def staging_insert_main(cursor, conn):
         write_to_log(start_timestamp, path_air_mac_packet_Samuel, "Finished", cursor, conn)
 
     except OSError as ex:
-        write_to_log(start_timestamp, path_air_mac_packet_Samuel, "*** File not found ***", cursor, conn)
-        print('**********************   Error: File Not Found *****************\n')
+        write_to_log(start_timestamp, path_air_mac_packet_Samuel, "***Error / File not found  ***", cursor, conn)
+        print('*************************Error / File not found  ********************\n')
 
 #############################################################################
 
@@ -762,8 +767,8 @@ def staging_insert_main(cursor, conn):
         write_to_log(start_timestamp, path_rrc_connection_establishment_kimbel, "Finished", cursor, conn)
 
     except OSError as ex:
-        write_to_log(start_timestamp, path_rrc_connection_establishment_kimbel, "*** File not found ***", cursor, conn)
-        print('**********************   Error: File Not Found *****************\n')
+        write_to_log(start_timestamp, path_rrc_connection_establishment_kimbel, "***Error / File not found  ***", cursor, conn)
+        print('*************************Error / File not found  ********************\n')
 
 
     print('staging_usm_rrc_connection_establishment_samuel')
@@ -781,8 +786,8 @@ def staging_insert_main(cursor, conn):
         write_to_log(start_timestamp, path_rrc_connection_establishment_Samuel, "Finished", cursor, conn)
 
     except OSError as ex:
-        write_to_log(start_timestamp, path_rrc_connection_establishment_Samuel, "*** File not found ***", cursor, conn)
-        print('**********************   Error: File Not Found *****************\n')
+        write_to_log(start_timestamp, path_rrc_connection_establishment_Samuel, "***Error / File not found  ***", cursor, conn)
+        print('*************************Error / File not found  ********************\n')
 
 
 ##############################################################################
@@ -802,9 +807,9 @@ def staging_insert_main(cursor, conn):
         write_to_log(start_timestamp, path_s1_connection_establishment_kimbell, "Finished", cursor, conn)
 
     except OSError as ex:
-        write_to_log(start_timestamp, path_s1_connection_establishment_kimbell, "*** File not found ***", cursor, conn)
+        write_to_log(start_timestamp, path_s1_connection_establishment_kimbell, "***Error / File not found  ***", cursor, conn)
 
-        print('**********************   Error: File Not Found ******************\n')
+        print('*************************Error / File not found  *********************\n')
 
 
     print('staging_usm_s1_connection_establishment_Samuel')
@@ -822,8 +827,8 @@ def staging_insert_main(cursor, conn):
         write_to_log(start_timestamp, path_s1_connection_establishment_samuel, "Finished", cursor, conn)
 
     except OSError as ex:
-        write_to_log(start_timestamp, path_s1_connection_establishment_samuel, "*** File not found ***", cursor, conn)
-        print('**********************   Error: File Not Found ******************\n')
+        write_to_log(start_timestamp, path_s1_connection_establishment_samuel, "***Error / File not found  ***", cursor, conn)
+        print('*************************Error / File not found  *********************\n')
 
 
 #############################################################################
@@ -844,8 +849,8 @@ def staging_insert_main(cursor, conn):
         write_to_log(start_timestamp, path_scell_added_information_kimbell, "Finished", cursor, conn)
 
     except OSError as ex:
-        write_to_log(start_timestamp, path_scell_added_information_kimbell, "*** File not found ***", cursor, conn)
-        print('**********************   Error: File Not Found ******************\n')
+        write_to_log(start_timestamp, path_scell_added_information_kimbell, "***Error / File not found  ***", cursor, conn)
+        print('*************************Error / File not found  *********************\n')
 
 
     print('staging_usm_scell_added_information_Samuel')
@@ -863,8 +868,8 @@ def staging_insert_main(cursor, conn):
         write_to_log(start_timestamp, path_scell_added_information_samuel, "Finished", cursor, conn)
 
     except OSError as ex:
-        write_to_log(start_timestamp, path_scell_added_information_samuel, "*** File not found ***", cursor, conn)
-        print('**********************   Error: File Not Found ******************\n')
+        write_to_log(start_timestamp, path_scell_added_information_samuel, "***Error / File not found  ***", cursor, conn)
+        print('*************************Error / File not found  *********************\n')
 
 ############################################################################
 
@@ -881,8 +886,8 @@ def staging_insert_main(cursor, conn):
         write_to_log(start_timestamp, path_imsi_Data, "Finished", cursor, conn)
 
     except OSError as ex:
-        write_to_log(start_timestamp, path_imsi_Data, "*** File not found ***", cursor, conn)
-        print('**********************   Error: File Not Found ******************\n')
+        write_to_log(start_timestamp, path_imsi_Data, "***Error / File not found  ***", cursor, conn)
+        print('*************************Error / File not found  *********************\n')
 
 
     print('staging_unique_users')
@@ -899,8 +904,8 @@ def staging_insert_main(cursor, conn):
         write_to_log(start_timestamp, path_unique_users, "Finished", cursor, conn)
 
     except OSError as ex:
-        write_to_log(start_timestamp, path_unique_users, "*** File not found ***", cursor, conn)
-        print('**********************   Error: File Not Found ******************\n')
+        write_to_log(start_timestamp, path_unique_users, "***Error / File not found  ***", cursor, conn)
+        print('*************************Error / File not found  *********************\n')
 
 ##########################################################################################
 
@@ -917,8 +922,8 @@ def staging_insert_main(cursor, conn):
         write_to_log(start_timestamp, path_blinq, "Finished", cursor, conn)
 
     except OSError as ex:
-        write_to_log(start_timestamp, path_blinq, "*** File not found ***", cursor, conn)
-        print('**********************   Error: File Not Found ******************\n')
+        write_to_log(start_timestamp, path_blinq, "***Error / File not found  ***", cursor, conn)
+        print('*************************Error / File not found  *********************\n')
 #############################################################################################
 
     print('staging_Bec_Export')
@@ -934,5 +939,5 @@ def staging_insert_main(cursor, conn):
         write_to_log(start_timestamp, path_Bec_Export, "Finished", cursor, conn)
 
     except OSError as ex:
-        write_to_log(start_timestamp, path_Bec_Export, "*** File not found ***", cursor, conn)
-        print('**********************   Error: File Not Found ******************\n')
+        write_to_log(start_timestamp, path_Bec_Export, "***Error / File not found  ***", cursor, conn)
+        print('*************************Error / File not found  *********************\n')

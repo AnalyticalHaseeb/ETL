@@ -1050,6 +1050,6 @@ dwh_merge_queries = [merge_dwh_usm_kpi_cell_level_dl_ri,
                      merge_dwh_DISD_BEC,
                      merge_dwh_BlinQ,
                      merge_dwh_cpe_online,
-                    merge_dwh_IMSI
+                      merge_dwh_IMSI
 
                      ]
